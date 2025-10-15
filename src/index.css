@@ -115,7 +115,7 @@ body {
 }
 .cell.ok      { background: var(--ok);     border-color: #1ab9ff; box-shadow: inset 0 -2px 0 rgba(0,0,0,.16); }
 .cell.present { background: var(--present); border-color: #eec600; box-shadow: inset 0 -2px 0 rgba(0,0,0,.16); }
-.cell.miss    { background: var(--miss);   border-color: #2b3a57; }
+.cell.miss    { background: var(--miss);   border-color: rgb(54, 55, 58); }
 
 /* ===== Keyboard ===== */
 .keyboard { display: grid; gap: calc(var(--gap) + 2px); }
@@ -204,6 +204,40 @@ body {
 .modal .primary:hover  { filter: brightness(1.06); box-shadow: 0 10px 26px rgba(44, 193, 255, .32); }
 .modal .primary:active { transform: translateY(1px); }
 
+
+.game-panel { position: relative; display: grid; gap: 12px; }
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.topbar .left { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.icon-btn {
+  inline-size: 36px;
+  block-size: 36px;
+  border-radius: 999px;
+  background: #285f9e;
+  border: 1px solid var(--ring);
+  color: #fff;
+  font-weight: 900;
+  font-size: 18px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 6px 16px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.04);
+  transition: transform .06s ease, filter .2s ease, background .2s ease, border-color .2s ease;
+}
+.icon-btn:hover { filter: brightness(1.06); background: #1b2f57; }
+.icon-btn:active { transform: translateY(1px); }
+
+/* Legend dots in HowTo modal */
+.legend { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; border: 1px solid rgba(0,0,0,.15); }
+.legend.ok { background: var(--ok); border-color: var(--ok); }
+.legend.present { background: var(--present); border-color: var(--present); }
+.legend.miss { background: var(--miss); border-color: var(--miss); }
+
 /* ===== Controls ===== */
 select, button, input[type="text"] {
   background: #14264a;
@@ -247,3 +281,4 @@ button.primary:active { transform: translateY(1px); }
   .container { gap: 14px; }
   .panel { padding: calc(var(--pad) - 4px); }
 }
+
