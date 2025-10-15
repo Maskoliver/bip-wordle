@@ -49,6 +49,7 @@ body {
   min-height: 100dvh;
   place-items: center;
   padding: calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom));
+  align-content: center;
 }
 
 .container { width: min(900px, 100%); display: grid; gap: 20px; }
