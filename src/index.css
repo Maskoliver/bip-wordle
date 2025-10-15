@@ -1,8 +1,8 @@
 /* ===== BiP-aligned color scheme ===== */
 :root {
   /* Base */
-  --bg: #0a1222;
-  --bg2: #0c1830;
+  --bg: #285f9e;
+  --bg2: #079BD5;
   --panel: rgba(15, 24, 44, .78);
   --text: #eef6ff;
   --muted: #a8b8cc;
