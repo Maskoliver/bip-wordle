@@ -68,8 +68,4 @@ const solutions = [
   'zaten', 'zorlu'
 ]
 
-// NOTE:
-// - All entries are intended to be common in modern usage and exactly 5 letters.
-// - If you want stricter curation, keep this file small (~150–300) and add/remove
-//   items that feel “daily” for your audience.
 export default solutions

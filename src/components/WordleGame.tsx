@@ -65,7 +65,7 @@ export default function WordleGame() {
         setActive('')
         setRevealIndex(nextRows.length - 1)
 
-        // Blur any focused key to prevent it from re-firing on the next line
+
         if (document.activeElement instanceof HTMLElement) {
             document.activeElement.blur()
         }

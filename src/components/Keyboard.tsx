@@ -1,5 +1,6 @@
+
+import { keyboardRows, upperTR } from '../utils/strings'
 import type { KeyStates } from '../utils/types'
-import { keyboardRows } from '../utils/strings'
 
 interface Props {
     onChar: (c: string) => void
@@ -14,11 +15,7 @@ export default function Keyboard({ onChar, onEnter, onBackspace, keyStates }: Pr
     return (
         <div className="keyboard panel">
             {keyboardRows.map((row, i) => (
-                <div
-                    className={`keyrow row-${i}${i === 2 ? ' last' : ''}`}
-                    key={i}
-                >
-                    {/* regular keys */}
+                <div className={`keyrow row-${i}${i === 2 ? ' last' : ''}`} key={i}>
                     {row.map((k) => (
                         <button
                             key={k}
@@ -26,12 +23,12 @@ export default function Keyboard({ onChar, onEnter, onBackspace, keyStates }: Pr
                             onMouseDown={preventFocus}
                             className={`key ${keyStates[k] ?? ''}`}
                             onClick={() => onChar(k)}
+                            aria-label={upperTR(k)}
                         >
-                            {k}
+                            {upperTR(k)}
                         </button>
                     ))}
 
-                    {/* Backspace at end of TOP row */}
                     {i === 0 && (
                         <button
                             type="button"
@@ -45,7 +42,6 @@ export default function Keyboard({ onChar, onEnter, onBackspace, keyStates }: Pr
                         </button>
                     )}
 
-                    {/* Enter at end of LAST row */}
                     {i === 2 && (
                         <button
                             type="button"

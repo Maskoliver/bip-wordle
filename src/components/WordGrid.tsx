@@ -1,5 +1,6 @@
-import type { EvalCell } from "../utils/types"
 
+import { upperTR } from '../utils/strings'
+import type { EvalCell } from '../utils/types'
 
 interface Props {
     rows: EvalCell[][]
@@ -29,10 +30,9 @@ export default function WordGrid({
                         <div
                             key={i}
                             className={`cell ${c.state ?? ''}`}
-                            /* stagger reveal per cell */
                             style={idx === revealIndex ? { animationDelay: `${i * 90}ms` } : undefined}
                         >
-                            {c.letter}
+                            {upperTR(c.letter)}
                         </div>
                     ))}
                 </div>
@@ -43,7 +43,7 @@ export default function WordGrid({
                 <div className={`row ${shakeActive ? 'shake' : ''}`}>
                     {Array.from({ length: wordLength }).map((_, i) => (
                         <div key={i} className="cell">
-                            {activeInput[i]?.toUpperCase() ?? ''}
+                            {activeInput[i] ? upperTR(activeInput[i]) : ''}
                         </div>
                     ))}
                 </div>
