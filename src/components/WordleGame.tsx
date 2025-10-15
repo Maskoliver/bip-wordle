@@ -1,12 +1,12 @@
+// ...imports stay the same
 import { useEffect, useState } from 'react'
 import WordGrid from './WordGrid'
 import Keyboard from './Keyboard'
 import EndModal from './EndModal'
 import { evaluateGuess, mergeKeyStates } from '../utils/evaluateGuess'
-
 import { strip, toTR } from '../utils/strings'
 import solutions from '../data/solutionWords'
-import type { KeyStates } from '../types'
+import type { KeyStates } from '../utils/types'
 
 const WORD_LEN = 5
 const MAX_TRIES = 6
@@ -53,19 +53,22 @@ export default function WordleGame() {
         if (over) return
         const guess = strip(active)
         if (guess.length !== WORD_LEN) {
-            // not enough letters → shake
             setShakeActive(true)
             setTimeout(() => setShakeActive(false), 420)
             return
         }
 
-        // Letter-based gameplay: no dictionary check
         const evalRow = evaluateGuess(guess, secret)
         const nextRows = [...rows, evalRow]
         setRows(nextRows)
         setKeyStates((ks) => mergeKeyStates(ks, evalRow))
         setActive('')
         setRevealIndex(nextRows.length - 1)
+
+        // Blur any focused key to prevent it from re-firing on the next line
+        if (document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur()
+        }
 
         const success = evalRow.every((c) => c.state === 'ok')
         if (success) {
@@ -77,7 +80,6 @@ export default function WordleGame() {
         }
     }
 
-    // Physical keyboard support
     useEffect(() => {
         function handler(e: KeyboardEvent) {
             const key = toTR(e.key)

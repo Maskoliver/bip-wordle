@@ -10,11 +10,7 @@ export default function App() {
         </div>
       </header>
       <WordleGame />
-      <footer className="footer">
-        <a href="https://github.com/" target="_blank" rel="noreferrer">Fork</a>
-        <span>·</span>
-        <a href="https://www.netlify.com/" target="_blank" rel="noreferrer">Netlify ile dağıt</a>
-      </footer>
+
     </div>
   )
 }

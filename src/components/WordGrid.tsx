@@ -1,4 +1,4 @@
-import type { EvalCell } from "../types"
+import type { EvalCell } from "../utils/types"
 
 
 interface Props {
