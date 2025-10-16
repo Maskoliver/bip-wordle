@@ -13,7 +13,6 @@ export default function EndModal({ open, onClose, won, secret, guesses }: Props)
             <div className="modal">
                 <h2>{won ? 'Tebrikler! 🎉' : 'Bitti'}</h2>
                 <p className="summary">
-                    <span>Sonuç: <strong>{won ? 'Kazandın' : 'Bulunamadı'}</strong></span>
                     <span>Kelime: <strong>{secret.toUpperCase()}</strong></span>
                     <span>Tahmin sayısı: <strong>{guesses}/6</strong></span>
                 </p>

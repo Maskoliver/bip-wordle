@@ -192,9 +192,9 @@ body {
 }
 
 /* ===== Modal ===== */
-.modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: grid; place-items: center; padding: 16px; }
+.modal-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); display: grid; place-items:center; padding: 16px; }
 .modal {
-  width: min(540px, 96vw);
+  width: min(480px, 80vw);
   background: linear-gradient(180deg, rgba(16,26,46,.92), rgba(12,22,40,.92));
   border: 1px solid var(--ring);
   border-radius: 18px;
@@ -273,6 +273,41 @@ button.primary {
 }
 button.primary:hover { filter: brightness(1.06); }
 button.primary:active { transform: translateY(1px); }
+
+
+.toast {
+  position: fixed;
+  left: 50%;
+  top: max(16px, calc(16px + env(safe-area-inset-bottom)));
+  transform: translateX(-50%);
+  z-index: 1000;
+
+  background: #14264a;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--ring);
+  box-shadow: 0 12px 28px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);
+
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: .2px;
+
+  animation: toast-in .18s ease-out both;
+}
+.toast.info    { background: #eec600; border-color: #ccab03; }
+.toast.error   { background: #f40000; border-color: #d40000; }
+.toast.success { background: #03a8f4; border-color: #028dce;}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .toast { animation: none; }
+}
 
 /* ===== Animations ===== */
 @keyframes flip { 0% { transform: rotateX(0); } 50% { transform: rotateX(90deg); } 100% { transform: rotateX(0); } }

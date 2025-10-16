@@ -3,10 +3,11 @@ import WordGrid from './WordGrid'
 import Keyboard from './Keyboard'
 import EndModal from './EndModal'
 import HowToModal from './HowToModal'
+import Toast from './Toast'
 import { evaluateGuess, mergeKeyStates } from '../utils/evaluateGuess'
-
 import { strip, toTR } from '../utils/strings'
 import solutions from '../data/solutionWords'
+import { useTurkishSpell } from '../utils/useTurkishSpell'
 import type { KeyStates } from '../utils/types'
 
 const WORD_LEN = 5
@@ -25,11 +26,22 @@ export default function WordleGame() {
     const [won, setWon] = useState(false)
     const [showHelp, setShowHelp] = useState(false)
 
-    // animation helpers
+    // animations
     const [revealIndex, setRevealIndex] = useState<number>(-1)
     const [shakeActive, setShakeActive] = useState(false)
 
+    // toast
+    const [toastOpen, setToastOpen] = useState(false)
+    const [toastMsg, setToastMsg] = useState('')
+    const [toastKind, setToastKind] = useState<'info' | 'error' | 'success'>('info')
+    const showToast = (msg: string, kind: 'info' | 'error' | 'success' = 'info') => {
+        setToastMsg(msg); setToastKind(kind); setToastOpen(true)
+    }
+
     const startAt = useRef<number>(Date.now())
+
+    // Turkish dictionary validator (CDN-loaded Hunspell)
+    const { ready: dictReady, error: dictError, isValid } = useTurkishSpell()
 
     const reset = () => {
         setSecret(pickRandom(solutions))
@@ -59,12 +71,35 @@ export default function WordleGame() {
     const onEnter = () => {
         if (over) return
         const guess = strip(active)
+
+        // length check → shake + toast
         if (guess.length !== WORD_LEN) {
             setShakeActive(true)
             setTimeout(() => setShakeActive(false), 420)
+            showToast('5 harf girmen gerekiyor.', 'error')
             return
         }
 
+        // dictionary loading / error handling
+        if (!dictReady) {
+            setShakeActive(true)
+            setTimeout(() => setShakeActive(false), 420)
+            showToast('Sözlük yükleniyor…', 'info')
+            return
+        }
+        if (dictError) {
+            console.warn('Dictionary error:', dictError)
+        }
+
+        // validity check → shake + toast
+        if (!isValid(guess)) {
+            setShakeActive(true)
+            setTimeout(() => setShakeActive(false), 420)
+            showToast('Geçersiz kelime', 'error')
+            return
+        }
+
+        // Evaluate
         const evalRow = evaluateGuess(guess, secret)
         const nextRows = [...rows, evalRow]
         setRows(nextRows)
@@ -72,14 +107,16 @@ export default function WordleGame() {
         setActive('')
         setRevealIndex(nextRows.length - 1)
 
-        // Blur focused key to avoid "last letter repeats" when pressing Enter
+        // Avoid “last key repeats” on Enter
         if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
 
         const success = evalRow.every((c) => c.state === 'ok')
         if (success) {
             setWon(true); setOver(true)
+            showToast('Doğru! 🎉', 'success')
         } else if (nextRows.length >= MAX_TRIES) {
             setWon(false); setOver(true)
+            showToast('Hakların bitti.', 'info')
         }
     }
 
@@ -89,52 +126,61 @@ export default function WordleGame() {
             const key = toTR(e.key)
             if (key === 'enter') return onEnter()
             if (key === 'backspace') return onBackspace()
-            if (key.length === 1 && /[a-zçğıöşü]/i.test(key)) return onChar(key)
+            if (key.length === 1 && /^[a-zçğıöşü]$/i.test(key)) return onChar(key)
         }
         window.addEventListener('keydown', handler)
         return () => window.removeEventListener('keydown', handler)
     })
 
 
-
     return (
-        <div className="panel game-panel">
-            <div className="topbar">
-                <div className="left">
-                    <span className="badge">Deneme: {rows.length}/{MAX_TRIES}</span>
-                    <span className="badge">Hedef: {WORD_LEN} harf</span>
+        <>
+            <div className="panel game-panel">
+                <div className="topbar">
+                    <div className="left">
+                        <span className="badge">Deneme: {rows.length}/{MAX_TRIES}</span>
+                        {!dictReady &&
+                            <span className="badge">{'Sözlük: yükleniyor…'}</span>
+                        }
+                    </div>
+                    <button className="icon-btn" onClick={() => setShowHelp(true)} aria-label="Nasıl oynanır?">?</button>
                 </div>
-                <button className="icon-btn" onClick={() => setShowHelp(true)} aria-label="Nasıl oynanır?">?</button>
+
+                <div className="content" style={{ display: 'grid', gap: 16 }}>
+                    <WordGrid
+                        rows={rows}
+                        wordLength={WORD_LEN}
+                        activeInput={active}
+                        maxTries={MAX_TRIES}
+                        revealIndex={revealIndex}
+                        shakeActive={shakeActive}
+                    />
+
+                    <Keyboard
+                        onChar={onChar}
+                        onEnter={onEnter}
+                        onBackspace={onBackspace}
+                        keyStates={keyStates}
+                    />
+
+                    <EndModal
+                        open={over}
+                        onClose={reset}
+                        won={won}
+                        secret={secret}
+                        guesses={rows.length}
+                    />
+                </div>
+
+                <HowToModal open={showHelp} onClose={() => setShowHelp(false)} />
             </div>
 
-            <div className="content" style={{ display: 'grid', gap: 16 }}>
-                <WordGrid
-                    rows={rows}
-                    wordLength={WORD_LEN}
-                    activeInput={active}
-                    maxTries={MAX_TRIES}
-                    revealIndex={revealIndex}
-                    shakeActive={shakeActive}
-                />
-
-                <Keyboard
-                    onChar={onChar}
-                    onEnter={onEnter}
-                    onBackspace={onBackspace}
-                    keyStates={keyStates}
-                />
-
-                <EndModal
-                    open={over}
-                    onClose={reset}
-                    won={won}
-                    secret={secret}
-                    guesses={rows.length}
-
-                />
-            </div>
-
-            <HowToModal open={showHelp} onClose={() => setShowHelp(false)} />
-        </div>
+            <Toast
+                open={toastOpen}
+                message={toastMsg}
+                kind={toastKind}
+                onClose={() => setToastOpen(false)}
+            />
+        </>
     )
 }
