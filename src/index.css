@@ -17,7 +17,7 @@
   /* Wordle semantics mapped to BiP */
   --ok: var(--bip-blue);
   --present: var(--bip-yellow);
-  --miss: #253047;
+  --miss: #4B5563;
   --accent: var(--bip-blue);
 
   /* Responsive sizing tokens */
@@ -115,7 +115,15 @@ body {
 }
 .cell.ok      { background: var(--ok);     border-color: #1ab9ff; box-shadow: inset 0 -2px 0 rgba(0,0,0,.16); }
 .cell.present { background: var(--present); border-color: #eec600; box-shadow: inset 0 -2px 0 rgba(0,0,0,.16); }
-.cell.miss    { background: var(--miss);   border-color: rgb(54, 55, 58); }
+.cell.miss {
+  background: var(--miss);
+  border-color: #6B7280;   
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255,255,255,0.06) 0 8px,
+    rgba(255,255,255,0.00) 8px 16px
+  );
+}
 
 /* ===== Keyboard ===== */
 .keyboard { display: grid; gap: calc(var(--gap) + 2px); }
@@ -152,7 +160,15 @@ body {
 
 .key.ok      { background: var(--ok);     border-color: #1ab9ff; }
 .key.present { background: var(--present); border-color: #eec600; }
-.key.miss    { background: var(--miss);   border-color: #2b3a57; }
+.key.miss {
+  background: var(--miss);
+  border-color: #6B7280;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255,255,255,0.06) 0 8px,
+    rgba(255,255,255,0.00) 8px 16px
+  );
+}
 
 /* Wide keys at row ends */
 .keyrow.row-0 .backspace { grid-column: span 2; }        /* always at end because it's last DOM child */
